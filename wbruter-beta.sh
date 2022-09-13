@@ -229,6 +229,127 @@ printf "%s%s %s\n" "$title" "${padding:${#title}}" "[${sqlite3Available}]"
 
 title="LockSettings via cmd"
 printf "%s%s %s\n" "$title" "${padding:${#title}}" "[${sqlite3Available}]"
-
-
 }
+
+
+
+function wbruter_letsBegin() {
+    wbruter_Requirements
+    wbruter_checkStatus
+    wbruter_checkDebug
+    wbruter_multiDevices
+}
+
+###################################################################################
+##########################     END OF ANDROID PART     ############################
+###################################################################################
+die() {
+    printf '%s\n' "$1" >&2
+    exit 1
+}
+
+# Initialize all the option variables.
+# This ensures we are not contaminated by variables from the environment.
+file=
+verbose=0
+
+while :; do
+    case $1 in
+        -a|-\?|--android)
+            wbruter_letsBegin
+            if [[ $2 = "cli" && $3 = "4" ]]; then
+                wbruter_androidCli4
+            elif [[ $2 = "cli" && $3 = "6" ]]; then
+                wbruter_androidCli6
+            elif [[ $2 = "gui" && $3 = "4" ]]; then
+                wbruter_androidGui4
+            elif [[ $2 = "gui" && $3 = "6" ]]; then
+                wbruter_androidCli6
+            else
+                errMSG "you must choose one of 4 or 6 pin length"
+                exit
+            fi
+            ;;
+
+###################################################################################
+### Display a usage synopsis.
+###################################################################################
+-h|-\?|--help)
+wbruter_showHelp   
+exit
+;;
+
+###################################################################################
+### # Takes an option argument; ensure it has been specified.
+###################################################################################
+-f|--file)       
+if [[ "$2" ]]; then
+    file=$2
+    shift
+else
+    die 'ERROR: "--file" requires a non-empty option argument.'
+fi
+;;
+
+###################################################################################
+### Delete everything up to "=" and assign the remainder.
+###################################################################################
+--file=?*)
+file=${1#*=} 
+;;
+
+###################################################################################
+### Handle the case of an empty --file=
+###################################################################################
+--file=)         
+die 'ERROR: "--file" requires a non-empty option argument.'
+;;
+
+###################################################################################
+# Print author /contact info of wbruter
+###################################################################################
+-U|--author)
+wbruter_Author
+exit
+;;
+###################################################################################
+# Each -v adds 1 to verbosity.
+###################################################################################
+-v|--verbose)
+verbose=$((verbose + 1))  
+;;
+
+###################################################################################
+# End of all options.
+###################################################################################
+--)              
+shift
+break
+;;
+###################################################################################
+# Invalid/Wrong/Unknown option
+###################################################################################
+-?*)
+printf 'WARN: Unknown option (ignored): %s\n' "$1" >&2
+;;
+
+
+###################################################################################
+# Default case: No more options, so break out of the loop.
+###################################################################################
+*)               
+break
+esac
+shift
+done
+
+###################################################################################
+### if --file was provided, open it for writing, else duplicate stdout
+###################################################################################
+if [[ "$file" ]]; then
+    exec 3> "$file"
+else
+    exec 3>&1
+fi
+
+if $1;then wbruter_showHelp;fi
