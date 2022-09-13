@@ -189,3 +189,46 @@ function wbruter_clearSscreen() {
 		adb shell input keyevent --longpress $(printf 'KEYCODE_DEL %.0s' {1..250});
 }
 
+
+function wbruter_deviceInfo() {
+androidVersion="$(adb shell getprop ro.build.version.release_or_codename)"
+lockSecured="$(adb shell getprop sys.locksecured)"
+oemUnlock="$(adb shell getprop sys.oem_unlock_allowed)"
+rootAccess="$(adb shell which su &> /dev/null ; if [[ $? = "0" ]]; then echo "yes"; else echo "no"; fi)"
+protectioNType="$(adb shell dumpsys lock_settings|grep -i CredentialType|awk '{print $2}')"
+failedAttempt="$(adb shell dumpsys lock_settings|grep -i "failed attempt"|awk '{print $4}')"
+sqlite3Available="$(adb shell which sqlite3 > /dev/null; if [[ $? = "0" ]]; then echo "yes"; else echo "no"; fi)"
+lockSettingsCmd="$(adb shell cmd lock_settings help > /dev/null; if [[ $? = "0" ]]; then echo "yes"; else echo "no"; fi)"
+
+padding="......................................"
+
+printf "==== Device iNFO ===========================\n"
+title="Android Version"
+printf "%s%s %s\n" "$title" "${padding:${#title}}" "[v${androidVersion}]"
+
+if [[ ${lockSecured} = "true" ]]; then lockSecured="yes"; else lockSecured="duh, no bruteforce needed";fi
+title="Lock Secured"
+printf "%s%s %s\n" "$title" "${padding:${#title}}" "[${lockSecured}]"
+
+if [[ ${oemUnlock} = 1 ]]; then oemUnlock="locked"; else        oemUnlock="unlocked";fi
+title="OEM Unlocking"
+printf "%s%s %s\n" "$title" "${padding:${#title}}" "[${oemUnlock}]"
+
+title="Lockscreen Protection"
+printf "%s%s %s\n" "$title" "${padding:${#title}}" "[${protectioNType}]"
+
+title="Failed Login Attempts"
+printf "%s%s %s\n" "$title" "${padding:${#title}}" "[${failedAttempt}]"
+
+title="Root Access"
+printf "%s%s %s\n" "$title" "${padding:${#title}}" "[${rootAccess}]"
+
+title="Sqlite3 Available"
+printf "%s%s %s\n" "$title" "${padding:${#title}}" "[${sqlite3Available}]"
+
+
+title="LockSettings via cmd"
+printf "%s%s %s\n" "$title" "${padding:${#title}}" "[${sqlite3Available}]"
+
+
+}
