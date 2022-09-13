@@ -1,7 +1,4 @@
-Work in progress
+Work in progress, no commits or reports plz. 
 
-
-
-??? Note "Reference(s)"
-    * <https://autodl-community.github.io/autodl-irssi/>
+When it's ready to use, this text will be gone. 
 
