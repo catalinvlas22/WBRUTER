@@ -40,6 +40,26 @@
 # - End of Header -------------------------------------------------------------
 VERSION=4.0
 
+function wbruter_showUsage() {
+cat <<! 
+[v${VERSION}]
+
+android bruteforce, usb: 
+
+     -a, --android cli 4|6                       - Bruteforce LockScreen protected by: pincode in cli
+     -a, --android gui 4|6                       - BruteForce LockScreen protected by: pincode in gui
+     -a, --android swipe                         - Bruteforce LockScreen protected by: swipe
+     -a, --android pattern                       - BruteForce LockScreen protected by: pattern
+     -a, --android password -w wordlist.txt      - BruteForce LockScreen protected by: password
+
+android device, online
+
+     -a, android imlucky                         - Hack a random android device online
+     -a, android vulnerable -i 123.123·0.0       - Find vulnerable android devices online by ipRange
+
+!
+}
+
 function wbruter_Author() {
 cat << "EOF"
 
@@ -199,35 +219,19 @@ protectioNType="$(adb shell dumpsys lock_settings|grep -i CredentialType|awk '{p
 failedAttempt="$(adb shell dumpsys lock_settings|grep -i "failed attempt"|awk '{print $4}')"
 sqlite3Available="$(adb shell which sqlite3 > /dev/null; if [[ $? = "0" ]]; then echo "yes"; else echo "no"; fi)"
 lockSettingsCmd="$(adb shell cmd lock_settings help > /dev/null; if [[ $? = "0" ]]; then echo "yes"; else echo "no"; fi)"
-
-padding="......................................"
+dots="$(printf '%50s\n'|tr ' ' '.')"
 
 printf "==== Device iNFO ===========================\n"
-title="Android Version"
-printf "%s%s %s\n" "$title" "${padding:${#title}}" "[v${androidVersion}]"
-
+title="Android Version";printf "%s%s %s\n" "$title" "${dots:${#title}}" "[v${androidVersion}]"
 if [[ ${lockSecured} = "true" ]]; then lockSecured="yes"; else lockSecured="duh, no bruteforce needed";fi
-title="Lock Secured"
-printf "%s%s %s\n" "$title" "${padding:${#title}}" "[${lockSecured}]"
-
+title="Lock Secured";printf "%s%s %s\n" "$title" "${dots:${#title}}" "[${lockSecured}]"
 if [[ ${oemUnlock} = 1 ]]; then oemUnlock="locked"; else        oemUnlock="unlocked";fi
-title="OEM Unlocking"
-printf "%s%s %s\n" "$title" "${padding:${#title}}" "[${oemUnlock}]"
-
-title="Lockscreen Protection"
-printf "%s%s %s\n" "$title" "${padding:${#title}}" "[${protectioNType}]"
-
-title="Failed Login Attempts"
-printf "%s%s %s\n" "$title" "${padding:${#title}}" "[${failedAttempt}]"
-
-title="Root Access"
-printf "%s%s %s\n" "$title" "${padding:${#title}}" "[${rootAccess}]"
-
-title="Sqlite3 Available"
-printf "%s%s %s\n" "$title" "${padding:${#title}}" "[${sqlite3Available}]"
-
-title="LockSettings via cmd"
-printf "%s%s %s\n" "$title" "${padding:${#title}}" "[${sqlite3Available}]"
+title="OEM Unlocking";printf "%s%s %s\n" "$title" "${dots:${#title}}" "[${oemUnlock}]"
+title="Lockscreen Protection";printf "%s%s %s\n" "$title" "${dots:${#title}}" "[${protectioNType}]";
+title="Failed Login Attempts";printf "%s%s %s\n" "$title" "${dots:${#title}}" "[${failedAttempt}]"
+title="Root Access";printf "%s%s %s\n" "$title" "${dots:${#title}}" "[${rootAccess}]"
+title="Sqlite3 Available";printf "%s%s %s\n" "$title" "${dots:${#title}}" "[${sqlite3Available}]"
+title="LockSettings via cmd";printf "%s%s %s\n" "$title" "${dots:${#title}}" "[${sqlite3Available}]"
 }
 
 
@@ -356,4 +360,4 @@ else
     exec 3>&1
 fi
 
-if $1;then wbruter_showHelp;fi
+if $1;then wbruter_showUsage;fi
