@@ -226,7 +226,6 @@ printf "%s%s %s\n" "$title" "${padding:${#title}}" "[${rootAccess}]"
 title="Sqlite3 Available"
 printf "%s%s %s\n" "$title" "${padding:${#title}}" "[${sqlite3Available}]"
 
-
 title="LockSettings via cmd"
 printf "%s%s %s\n" "$title" "${padding:${#title}}" "[${sqlite3Available}]"
 }
@@ -243,6 +242,9 @@ function wbruter_letsBegin() {
 ###################################################################################
 ##########################     END OF ANDROID PART     ############################
 ###################################################################################
+
+
+
 die() {
     printf '%s\n' "$1" >&2
     exit 1
@@ -265,17 +267,19 @@ while :; do
                 wbruter_androidGui4
             elif [[ $2 = "gui" && $3 = "6" ]]; then
                 wbruter_androidCli6
+            elif [[ $2 = "info" ]]; then
+                wbruter_deviceInfo
             else
                 errMSG "you must choose one of 4 or 6 pin length"
                 exit
             fi
-            ;;
+;;
 
 ###################################################################################
 ### Display a usage synopsis.
 ###################################################################################
 -h|-\?|--help)
-wbruter_showHelp   
+wbruter_showUsage   
 exit
 ;;
 
